@@ -284,6 +284,19 @@ describe('Observable', function() {
 			observe.set('good.not.yes.nope', 77)
 			expect(spy).not.toHaveBeenCalled();
 		});
+		it('4 keys no call', function() {
+			var observe = new Observable(testObj);
+			var spy = jasmine.createSpy('Callback Spy');
+			var spy2 = jasmine.createSpy('Callback Spy');
+			var spy3 = jasmine.createSpy('Callback Spy');
+			observe.subscribe('good.noz', spy);
+			observe.subscribe('good.not.yes.nope', spy2);
+			observe.subscribe('good.noye', spy3);
+			observe.set('good.not.yes.nope', 77)
+			expect(spy).not.toHaveBeenCalled();
+			expect(spy2).toHaveBeenCalled();
+			expect(spy3).not.toHaveBeenCalled();
+		});
 		it('Empty string gets called always', function() {
 			var observe = new Observable(testObj);
 			var spy = jasmine.createSpy('Callback Spy');
