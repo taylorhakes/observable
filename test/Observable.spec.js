@@ -284,6 +284,26 @@ describe('Observable', function() {
 			observe.set('good.not.yes.nope', 77)
 			expect(spy).not.toHaveBeenCalled();
 		});
+		it('Empty string gets called always', function() {
+			var observe = new Observable(testObj);
+			var spy = jasmine.createSpy('Callback Spy');
+			observe.subscribe('', spy);
+			observe.set('good.not.yes.nope', 77);
+			expect(spy).toHaveBeenCalledWith(observe.obj, '');
+		});
+		it('Empty keyPath calls all subscribers', function() {
+			var observe = new Observable(testObj);
+			var spy = jasmine.createSpy('Callback Spy');
+			var spy2 = jasmine.createSpy('Callback Spy 2');
+			var spy3 = jasmine.createSpy('Callback Spy 3');
+			observe.subscribe('', spy);
+			observe.subscribe('good.not.yes.nope', spy2);
+			observe.subscribe('good.not', spy3);
+			observe.set('', {});
+			expect(spy).toHaveBeenCalledWith(observe.obj, '');
+			expect(spy2).toHaveBeenCalledWith(undefined, 'good.not.yes.nope');
+			expect(spy3).toHaveBeenCalledWith(undefined, 'good.not');
+		});
 		it('deeper key calls shallow subscriber', function() {
 			var observe = new Observable(testObj);
 			var spy = jasmine.createSpy('Callback Spy');

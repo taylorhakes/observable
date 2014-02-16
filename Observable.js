@@ -57,9 +57,12 @@
 
 		if (!silence) {
 			for (i = 0; i < this.watchers.length; i++) {
-				if (this.watchers[i].keyPath === keyPath ||
+				if (!this.watchers[i].keyPath ||
+					!keyPath ||
+					this.watchers[i].keyPath === keyPath ||
 					this.watchers[i].keyPath.match(new RegExp('^' + keyPath.replace('.', '\\.') + '\\..*?')) ||
 					keyPath.match(new RegExp('^' + this.watchers[i].keyPath.replace('.', '\\.') + '\\..*?'))) {
+
 					this.watchers[i].callback(this.get(this.watchers[i].keyPath, true), this.watchers[i].keyPath);
 				}
 			}

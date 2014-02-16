@@ -17,10 +17,7 @@ module.exports = function(grunt) {
 			options: {
 				// options here to override JSHint defaults
 				globals: {
-					jQuery: true,
-					console: true,
-					module: true,
-					document: true
+					module: true
 				}
 			}
 		},
@@ -32,7 +29,8 @@ module.exports = function(grunt) {
 			options: {
 				configFile: 'karma.conf.js',
 				browsers: ['PhantomJS'],
-				singleRun: true
+				singleRun: true,
+				autoWatch: false
 			}
 		}
 	});
