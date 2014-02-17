@@ -1,7 +1,7 @@
 observable
 ==========
 
-Simple observable class for use with rivetsjs and other libraries
+Simple observable class (similar to watchjs) for use with rivetsjs and other libraries
 
 
 ####Simple Use
