@@ -4,7 +4,7 @@
 	"description": "Observable object for use with rivetsjs and other libraries",
 	"main": "Observable.js",
 	"scripts": {
-		"test": "/node_modules/grunt-cli/bin/grunt test"
+		"test": "./node_modules/grunt-cli/bin/grunt test"
 	},
 	"repository": {
 		"type": "git",
