@@ -11,6 +11,12 @@ describe('Observable', function() {
 			var observe = new Observable(testObj);
 			expect(observe.obj).toBe(testObj);
 		});
+		it('Invalid type throw error', function() {
+			var testObj = false;
+			expect(function() {
+				new Observable(testObj);
+			}).toThrow();
+		});
 		it('Custom Object', function() {
 			var testObj = ['hello', 'world'];
 			var observe = new Observable(testObj);
@@ -121,9 +127,8 @@ describe('Observable', function() {
 			var observe = new Observable(testObj);
 			expect(function() {
 				observe.get('good.not.ye.nope')
-			}).toThrow('Invalid keyPath');
+			}).toThrow('Invalid keyPath: good.not.ye.nope');
 		});
-
 	});
 	describe('set', function() {
 		it('empty', function() {
@@ -235,7 +240,7 @@ describe('Observable', function() {
 			var observe = new Observable(testObj);
 			expect(function() {
 				observe.set('cool.good.mit.need',val)
-			}).toThrow('Invalid keyPath');
+			}).toThrow('Invalid keyPath: cool.good.mit.need');
 		});
 	});
 	describe('subscribe', function() {
@@ -397,6 +402,32 @@ describe('Observable', function() {
 			expect(spy).not.toHaveBeenCalled();
 			expect(spy2).not.toHaveBeenCalled();
 			expect(spy3).toHaveBeenCalled();
+		});
+	});
+	describe('toObservables', function() {
+		it('standard array', function() {
+			var arr = [{ test: 1234 }, { hello: 'world'}];
+			Observable.toObservables(arr);
+			expect(arr[0] instanceof Observable).toBe(true);
+			expect(arr[0] instanceof Observable).toBe(true);
+		});
+		it('standard object', function() {
+			var arr = { num1: { test: 1234 }, num2: { hello: 'world'} };
+			Observable.toObservables(arr);
+			expect(arr.num1 instanceof Observable).toBe(true);
+			expect(arr.num2 instanceof Observable).toBe(true);
+		});
+		it('invalid value', function() {
+			var arr = false;
+			expect(function() {
+				var a = Observable.toObservables(arr);
+			}).toThrow();
+		});
+		it('invalid value', function() {
+			var arr = 'hello';
+			expect(function() {
+				var a = Observable.toObservables(arr);
+			}).toThrow();
 		});
 	});
 })

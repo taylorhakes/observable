@@ -1,8 +1,11 @@
 (function (root) {
 	"use strict";
 	function Observable(obj) {
+		if(obj !== undefined && (typeof obj !== 'object' || !obj)) {
+			throw new TypeError('Value must be undefined or object');
+		}
 		this.obj = obj || {};
-		this.watchers = [];
+		this._watchers = [];
 	}
 
 	/**
@@ -22,7 +25,7 @@
 				if (loose) {
 					return void 0;
 				} else {
-					throw new Error('Invalid keyPath')
+					throw new Error('Invalid keyPath: ' + keyPath);
 				}
 			}
 			val = val[parts[i]];
@@ -34,7 +37,7 @@
 	 * Set an object value base on the keyPath
 	 * @param {string} keyPath Path to a property i.e. "hello" or "hello.world.mine"
 	 * @param {*} value
-	 * @param {boolean} silence Do not notify subscribers
+	 * @param {boolean} [silence] Do not notify subscribers
 	 */
 	Observable.prototype.set = function (keyPath, value, silence) {
 		var i, parts, val;
@@ -45,7 +48,7 @@
 			val = this.obj;
 			for (i = 0; i < parts.length; i++) {
 				if (!val) {
-					throw new Error('Invalid keyPath')
+					throw new Error('Invalid keyPath: ' + keyPath);
 				}
 				if (i === parts.length - 1) {
 					val[parts[i]] = value;
@@ -56,14 +59,13 @@
 		}
 
 		if (!silence) {
-			for (i = 0; i < this.watchers.length; i++) {
-				if (!this.watchers[i].keyPath ||
+			for (i = 0; i < this._watchers.length; i++) {
+				if (!this._watchers[i].keyPath ||
 					!keyPath ||
-					this.watchers[i].keyPath === keyPath ||
-					this.watchers[i].keyPath.match(new RegExp('^' + keyPath.replace('.', '\\.') + '\\..*?')) ||
-					keyPath.match(new RegExp('^' + this.watchers[i].keyPath.replace('.', '\\.') + '\\..*?'))) {
-
-					this.watchers[i].callback(this.get(this.watchers[i].keyPath, true), this.watchers[i].keyPath);
+					this._watchers[i].keyPath === keyPath ||
+					this._watchers[i].keyPath.match(new RegExp('^' + keyPath.replace('.', '\\.') + '\\..*?')) ||
+					keyPath.match(new RegExp('^' + this._watchers[i].keyPath.replace('.', '\\.') + '\\..*?'))) {
+					this._watchers[i].callback(this.get(this._watchers[i].keyPath, true), this._watchers[i].keyPath);
 				}
 			}
 		}
@@ -75,7 +77,7 @@
 	 * @param {function} callback Callback with signature function(value, keyPath) {}
 	 */
 	Observable.prototype.subscribe = function (keyPath, callback) {
-		this.watchers.push({
+		this._watchers.push({
 			keyPath:  keyPath,
 			callback: callback
 		});
@@ -87,20 +89,36 @@
 	 * @param {function} callback
 	 */
 	Observable.prototype.unsubscribe = function (keyPath, callback) {
-		for (var i = this.watchers.length - 1; i >= 0; i--) {
-			if (this.watchers[i].keyPath === keyPath && (!callback || this.watchers[i].callback === callback)) {
-				this.watchers.splice(i, 1);
+		for (var i = this._watchers.length - 1; i >= 0; i--) {
+			if (this._watchers[i].keyPath === keyPath && (!callback || this._watchers[i].callback === callback)) {
+				this._watchers.splice(i, 1);
 			}
 		}
 	};
 
+	/**
+	 * Takes in an array or obj and create an Observable for each property
+	 * @param obj
+	 * @returns {*}
+	 */
+	Observable.toObservables = function(obj) {
+		if(typeof obj !== 'object' || !obj) {
+			throw new TypeError('Value must be an object')
+		}
+		for(var prop in obj) {
+			if(obj.hasOwnProperty(prop)) {
+				obj[prop] = new Observable(obj[prop]);
+			}
+		}
+		return obj;
+	};
 
 	if (typeof define === 'function' && define.amd) {
 		// AMD. Register as an anonymous module.
 		define(Observable);
-	} else if (typeof exports === 'object') {
+	} else if (typeof module !== 'undefined' && typeof module.exports === 'object') {
 		// CommonJS
-		exports = Observable;
+		module.exports = Observable;
 	} else {
 		// Browser globals
 		root.Observable = Observable;

@@ -12,33 +12,26 @@ module.exports = function(grunt) {
 				}
 			}
 		},
-		jshint: {
-			files: ['Gruntfile.js', '<%= pkg.name %>.js', 'test/**/*.js'],
-			options: {
-				// options here to override JSHint defaults
-				globals: {
-					module: true
-				}
-			}
-		},
-		watch: {
-			files: ['<%= jshint.files %>'],
-			tasks: ['jshint', 'karma']
-		},
 		karma: {
-			options: {
-				configFile: 'karma.conf.js',
-				browsers: ['PhantomJS'],
-				singleRun: true,
-				autoWatch: false
+			main: {
+				options: {
+					configFile: 'karma.conf.js',
+					singleRun: true,
+					autoWatch: false
+				}
+			},
+			watch: {
+				options: {
+					configFile: 'karma.conf.js'
+				}
 			}
 		}
 	});
 
 	require('load-grunt-tasks')(grunt);
 
-	grunt.registerTask('test', ['karma']);
-
-	grunt.registerTask('default', ['jshint', 'karma', 'watch']);
+	grunt.registerTask('test', ['karma:main']);
+	grunt.registerTask('build', ['karma:main', 'uglify'])
+	grunt.registerTask('default', ['karma:watch']);
 
 };
