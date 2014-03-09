@@ -1,10 +1,7 @@
-observable
+observable [![Build Status](https://travis-ci.org/taylorhakes/observable.png?branch=master)](https://travis-ci.org/taylorhakes/observable)
 ==========
 
 Simple observable class (similar to watchjs) for use with rivetsjs and other libraries
-
-[![Build Status](https://travis-ci.org/taylorhakes/observable.png)](https://travis-ci.org/taylorhakes/observable)
-
 
 ####Simple Use
 
