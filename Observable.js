@@ -113,12 +113,12 @@
 		return obj;
 	};
 
-	if (typeof define === 'function' && define.amd) {
-		// AMD. Register as an anonymous module.
-		define(Observable);
-	} else if (typeof module !== 'undefined' && typeof module.exports === 'object') {
-		// CommonJS
-		module.exports = Observable;
+	if (typeof module !== 'undefined' && typeof module.exports === 'object') {
+        // CommonJS
+        module.exports = Observable;
+	} else if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(Observable);
 	} else {
 		// Browser globals
 		root.Observable = Observable;
