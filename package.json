@@ -1,6 +1,6 @@
 {
 	"name": "Observable",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "Observable object for use with rivetsjs and other libraries",
 	"main": "Observable.js",
 	"scripts": {
